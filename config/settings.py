@@ -212,7 +212,7 @@ if not DEBUG:
     INSTALLED_APPS.append('cloudinary_storage')
 
     # ALLOWED_HOSTSに(Djangoの公開を許可するホスト名(ドメイン名))を入力
-    ALLOWED_HOSTS = os.environ ["HOST"]
+    ALLOWED_HOSTS = [ os.environ["HOST"] ]
 
     # パスワードのハッシュ化、CSRFトークンの生成に使われる。
     SECRET_KEY = os.environ ["SECRETKEY"]
