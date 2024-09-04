@@ -218,12 +218,18 @@ class IndexView(View):
 
 
 
-        # 検索している場合もしていない場合も、Restaurant.objects.filter(query) でOK
+         # 検索している場合もしていない場合も、Restaurant.objects.filter(query) でOK
         #作ったクエリを実行(検索のパラメータがない場合、絞り込みは発動しない。)
         #context["topics"] = Topic.objects.filter(query)
-        context["restaurants"] = Restaurant.objects.filter(query)
-        
+        #context["restaurants"] = Restaurant.objects.filter(query)
+        # 開発中はid順で出てきてくれるが、デプロイ後はDBが違うのでid順で出てこないことがある。
+        # 対策: .order_by("id") を使う。SQL の ORDER BY 句。並び替えをすることができる。
+        context["restaurants"] = Restaurant.objects.filter(query).order_by("id")
 
+        # 投稿日時順にしたい場合は、こうする。
+        # context["restaurants"] = Restaurant.objects.filter(query).order_by("created_at")
+        # 新しい投稿日時が上に来るようにしたい。
+        # context["restaurants"] = Restaurant.objects.filter(query).order_by("-created_at")
 
 
         #return render(request,"bbs/index.html",context)
