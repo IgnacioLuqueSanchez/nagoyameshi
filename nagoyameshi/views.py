@@ -280,23 +280,44 @@ restaurant = RestaurantView.as_view()
 class ReviewView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         
-        #TODO: Reviewの投稿処理をする。
-        print("投稿処理をする")
+        # TODO: ↓  と同じものをレビューと予約の冒頭に入れる。
 
-        #TODO: ReviewFormを使って、チェックをした上で、DBに保存する。
-        form    = ReviewForm(request.POST)
+        # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
 
-        # .is_valid()でルールに従っているかチェックする。
-        if form.is_valid():
-            print("保存")
-            form.save()
-        else:
-            print(form.errors)
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+    
+        # このカスタマーidを使って、サブスクリプションが有効かチェックをする。
+        #premium_user.premium_code 
+
+        # PremiumUserにデータがなかった場合(まだ有料会員登録をしていない状態)        
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshi:index")
 
 
-        #TODO: 投稿処理を終えた後、トップページに移動
-        # "app_name:name" で移動先のURLを与える
-        return redirect("nagoyameshi:index")
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code )
+        except:
+            print("このカスタマーIDは無効です。")
+            premium_user.delete()
+
+            return redirect("nagoyameshi:index")
+
+
+        premium = False
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                premium = True
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not premium:
+            redirect("nagoyameshi:index")
+
+        # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
 
 review = ReviewView.as_view()
 
