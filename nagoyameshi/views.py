@@ -279,6 +279,25 @@ restaurant = RestaurantView.as_view()
 
 class ReviewView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
+        #TODO: Reviewの投稿処理をする。
+        print("投稿処理をする")
+
+        #TODO: ReviewFormを使って、チェックをした上で、DBに保存する。
+        form    = ReviewForm(request.POST)
+
+        # .is_valid()でルールに従っているかチェックする。
+        if form.is_valid():
+            print("保存")
+            form.save()
+        else:
+            print(form.errors)
+
+
+        #TODO: 投稿処理を終えた後、トップページに移動
+        # "app_name:name" で移動先のURLを与える
+        return redirect("nagoyameshi:index")
+
+
         
         # TODO: ↓  と同じものをレビューと予約の冒頭に入れる。
 
