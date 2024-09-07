@@ -292,13 +292,8 @@ class ReviewView(LoginRequiredMixin, View):
         else:
             print(form.errors)
 
+ 
 
-        #TODO: 投稿処理を終えた後、トップページに移動
-        # "app_name:name" で移動先のURLを与える
-        return redirect("nagoyameshi:index")
-
-
-        
         # TODO: ↓  と同じものをレビューと予約の冒頭に入れる。
 
         # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
