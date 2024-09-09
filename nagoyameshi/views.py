@@ -279,23 +279,8 @@ restaurant = RestaurantView.as_view()
 
 class ReviewView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        #TODO: Reviewの投稿処理をする。
-        print("投稿処理をする")
-
-        #TODO: ReviewFormを使って、チェックをした上で、DBに保存する。
-        form    = ReviewForm(request.POST)
-
-        # .is_valid()でルールに従っているかチェックする。
-        if form.is_valid():
-            print("保存")
-            form.save()
-        else:
-            print(form.errors)
-
- 
 
         # TODO: ↓  と同じものをレビューと予約の冒頭に入れる。
-
         # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
 
         premium_user = PremiumUser.objects.filter(user=request.user).first()
@@ -320,6 +305,7 @@ class ReviewView(LoginRequiredMixin, View):
 
 
         premium = False
+
         # ステータスがアクティブであるかチェック。
         for subscription in subscriptions.auto_paging_iter():
             if subscription.status == "active":
@@ -332,6 +318,22 @@ class ReviewView(LoginRequiredMixin, View):
             redirect("nagoyameshi:index")
 
         # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
+
+
+
+        #TODO: Reviewの投稿処理をする。
+        print("投稿処理をする")
+
+        #TODO: ReviewFormを使って、チェックをした上で、DBに保存する。
+        form    = ReviewForm(request.POST)
+
+        # .is_valid()でルールに従っているかチェックする。
+        if form.is_valid():
+            print("保存")
+            form.save()
+        else:
+            print(form.errors)
+
 
 review = ReviewView.as_view()
 
