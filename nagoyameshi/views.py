@@ -334,6 +334,7 @@ class ReviewView(LoginRequiredMixin, View):
         else:
             print(form.errors)
 
+        return redirect("nagoyameshi:restaurant", pk)
 
 review = ReviewView.as_view()
 
