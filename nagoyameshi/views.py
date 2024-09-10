@@ -278,7 +278,7 @@ class RestaurantView(View):
 restaurant = RestaurantView.as_view()
 
 class ReviewView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
 
         # TODO: ↓  と同じものをレビューと予約の冒頭に入れる。
         # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
