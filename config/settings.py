@@ -49,24 +49,26 @@ ACCOUNT_EMAIL_VARIFICATION  = "mandatory"
 ACCOUNT_EMAIL_REQUIRED      = True
 
 
+
 #DEBUGがTrueのとき、メールの内容は全て端末に表示させる(実際にメールを送信したい時はここをコメントアウトする)
 if DEBUG:
     EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
 else:
 
-    EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
+    #EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
 
-    """
     #TODO:SendgridのAPIキーと送信元メールアドレスを入れていない時、以下が実行されると必ずエラーになる点に注意。
     EMAIL_BACKEND       = "sendgrid_backend.SendgridBackend"
-    DEFAULT_FROM_EMAIL  = "ここにデフォルトの送信元メールアドレスを指定"
+    DEFAULT_FROM_EMAIL  = os.environ["DEFAULT_FROM_EMAIL"]
 
     #【重要】APIキーの入力後、GitHubへのプッシュは厳禁。可能であれば.gitignoreに指定した別ファイルから読み込む
-    SENDGRID_API_KEY    = "ここにsendgridのAPIkeyを記述する"
+    SENDGRID_API_KEY    = os.environ["SENDGRID_API_KEY"]
 
     #Sendgrid利用時はサンドボックスモードを無効化しておく。
     SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-    """
+
+
+
 
 #################django-allauthでのメール認証設定ここまで###################
 
