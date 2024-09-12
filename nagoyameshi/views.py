@@ -493,8 +493,51 @@ class FavoriteView(LoginRequiredMixin, View):
 favorite = FavoriteView.as_view()
 
 
+
 class ReservationView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
+
+        # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====
+
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+        
+        # このカスタマーidを使って、サブスクリプションが有効かチェックをする。
+        #premium_user.premium_code 
+
+        # PremiumUserにデータがなかった場合(まだ有料会員登録をしていない状態)        
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshi:index")
+
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code )
+        except:
+            print("このカスタマーIDは無効です。")
+            premium_user.delete()
+
+            return redirect("nagoyameshi:index")
+
+
+        premium = False
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                premium = True
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not premium:
+            redirect("nagoyameshi:index")
+
+        # ===== リクエストを送ったユーザーが有料会員登録をしているかチェックをする =====        
+
+
+
+
+
 
         form    = ReservationForm(request.POST)
         if form.is_valid():
@@ -504,7 +547,7 @@ class ReservationView(LoginRequiredMixin, View):
             print(form.errors)
         return redirect("nagoyameshi:index")
     
-reservation = ReservationView.as_view()
+reservation = ReservationView.as_view() 
 
 #TODO: 予約キャンセルをするビュー
 
